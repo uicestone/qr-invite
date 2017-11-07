@@ -1,0 +1,9 @@
+<xml>
+	<ToUserName><![CDATA[<?=$received_message->FromUserName?>]]></ToUserName>
+	<FromUserName><![CDATA[<?=$received_message->ToUserName?>]]></FromUserName> 
+	<CreateTime><?=time()?></CreateTime>
+	<MsgType><![CDATA[image]]></MsgType>
+	<Image>
+		<MediaId><![CDATA[<?=$content?>]]></MediaId>
+	</Image>
+</xml>

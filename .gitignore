@@ -1,0 +1,7 @@
+/vendor
+/node_modules
+/public/uploads
+/.env
+/.idea
+/app/Http/Controllers/TestController.php
+/app/Console/Commands/Test.php
