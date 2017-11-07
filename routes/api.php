@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 
 $router->get('order/capacity', 'OrderController@getCapacity');
 // 内容相关
-$router->get('/', 'WelcomeController@home');
 $router->resource('user', 'UserController');
 $router->resource('post', 'PostController');
 $router->post('post/{post}', 'PostController@restore'); // 恢复软删除的内容
