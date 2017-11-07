@@ -2,7 +2,6 @@
 
 use App\Message, App\User;
 use App\Http\Request;
-use PushNotification;
 
 class MessageController extends Controller
 {

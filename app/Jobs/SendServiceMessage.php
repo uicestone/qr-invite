@@ -5,7 +5,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Weixin;
-use Traversable, PushNotification;
+use Traversable;
 
 class SendServiceMessage extends Job implements SelfHandling, ShouldQueue
 {
