@@ -663,6 +663,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 		if(!$users_count)
 		{
 			$users_count = User::where('points', '>', 0)->count();
+
+			if (!$users_count) {
+				return 0;
+			}
+
 			Cache::put('users_count_with_positive_points', $users_count, 1440);
 		}
 

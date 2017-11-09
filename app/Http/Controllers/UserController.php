@@ -422,7 +422,7 @@ class UserController extends Controller
 		})
 		->get();
 
-		if(!$users)
+		if(!$users->count())
 		{
 			abort(401, '用户名或联系方式不存在');
 		}
