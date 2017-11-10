@@ -1391,14 +1391,15 @@ class Weixin {
 			
 			$image_invite_card_path = storage_path('uploads/' . md5($event->id . '-invitation-' . $user->id) . '.jpg');
 			
-			$image_invitation_card->text(mb_strstripmb4($user->name), 175, 225, function(Font $font)
+			$image_invitation_card->text(mb_strstripmb4($user->name) . "\n" . '邀请您参加', 490, 345, function(Font $font)
 			{
-				$font->file(env('FONT_PATH') . 'msyh.ttf');
+				$font->file(env('FONT_PATH') . 'SIMLI.TTF');
 				$font->size(36);
-				$font->color([255, 105, 64]);
+				$font->color([0, 86, 22]);
+				$font->align('center');
 			})
-			->insert($image_avatar->resize(100, 100), 'top-left', 53, 193)
-			->insert($image_qrcode->resize(250, 250), 'top-left', 195, 755)
+			->insert($image_avatar->resize(175, 175)->mask(resource_path('images/avatar_mask.png'), true), 'top-left', 397, 12)
+			->insert($image_qrcode->resize(200, 200), 'top-left', 195, 885)
 			->save($image_invite_card_path);
 
 			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 上传邀请活动 ' . $event->id . ' ' . $event->title . ' 的邀请函');
