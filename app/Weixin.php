@@ -591,7 +591,7 @@ class Weixin {
 			}
 			
 			// 准备创建新用户
-			if(is_null($this->user) && !in_array($message_raw->Event, ['unsubscribe', 'MASSSENDJOBFINISH']))
+			if(is_null($this->user) && (!isset($message_raw->Event) || !in_array($message_raw->Event, ['unsubscribe', 'MASSSENDJOBFINISH'])))
 			{
 				Log::info('[' . str_replace('_', '', $this->account) . '] 未找到openid' . $this->account . ': ' . $message_raw->FromUserName . '的信息，创建新用户。');
 				$this->user = new User();
@@ -610,12 +610,18 @@ class Weixin {
 				if(property_exists($user_info, 'nickname'))
 				{
 					$this->user->fill([
-						'wx_unionid'=>$user_info->unionid,
 						'name'=>$user_info->nickname,
 						'address'=>$user_info->province . ' ' . $user_info->city,
 						'gender'=>$user_info->sex,
 						'avatar'=>$user_info->headimgurl,
 					]);
+
+					if (isset($user_info->unionid))
+					{
+						$this->user->fill([
+							'wx_unionid'=>$user_info->unionid
+						]);
+					}
 
 					$this->user->save();
 				}

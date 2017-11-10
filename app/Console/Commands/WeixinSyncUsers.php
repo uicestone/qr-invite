@@ -61,30 +61,36 @@ class WeixinSyncUsers extends Command
 			{
 				$openid_profile_existsed = Profile::where('key', 'wx_openid' . $weixin->account)->where('value', $openid)->first();
 
+				$user_existed = null;
+
 				if($openid_profile_existsed)
 				{
 					$user_existed = $openid_profile_existsed->user;
 				}
-				else
+				elseif ($weixin->supports('unionid'))
 				{
 					$user_info = $weixin->getUserInfo($openid);
 					$user_existed = User::where('wx_unionid', $user_info->unionid)->first();
 				}
 
-				if(!$user_existed)
+				if(empty($user_existed))
 				{
 					if(!isset($user_info))
 					{
 						$user_info = $weixin->getUserInfo($openid);
 					}
-					$this->info('正在创建用户' . $user_info->nickname . '(' . $user_info->unionid . ')');
+					$this->info('正在创建用户' . $user_info->nickname . '(' . $weixin->name . ' ' . $user_info->openid . ')');
 					$user = new User([
-						'wx_unionid' => $user_info->unionid,
 						'name' => $user_info->nickname,
 						'address' => $user_info->province . ' ' . $user_info->city,
 						'gender' => $user_info->sex,
 						'avatar' => $user_info->headimgurl,
 					]);
+
+					if (isset($user_info->unionid))
+					{
+						$user->wx_unionid = $user_info->unionid;
+					}
 
 					$user->save();
 				}
@@ -94,25 +100,32 @@ class WeixinSyncUsers extends Command
 
 					$user->load('profiles');
 
-					if(!$user->gender || !$user->wx_unionid)
+					if(!$user->gender || ($weixin->supports('unionid') && !$user->wx_unionid))
 					{
 						if(!isset($user_info))
 						{
 							$user_info = $weixin->getUserInfo($openid);
 						}
-						$this->info('正在更新用户 ' . $user->id . ' ' . $user_info->nickname . '(' . $user_info->openid . ' ' . $user_info->unionid . ')');
+						$this->info('正在更新用户 ' . $user->id . ' ' . $user_info->nickname . '(' . $user_info->openid . (isset($user_info->unionid) ? ' ' . $user_info->unionid : '') . ')');
 						$user->fill([
-							'wx_unionid' => $user_info->unionid,
 							'name' => $user->name ?: $user_info->nickname,
 							'address' => $user_info->province . ' ' . $user_info->city,
 							'gender' => $user_info->sex,
 							'avatar' => $user_info->headimgurl,
 						]);
 
+						if (isset($user_info->unionid))
+						{
+							$user->wx_unionid = $user_info->unionid;
+						}
+
 						$user->save();
 					}
-					
-//					$this->dispatch(new SyncWeixinUserSubscribeTime($user, substr($weixin->account, 1), $openid, isset($user_info) ? $user_info : null));
+
+					if ($user->created_at->diffInSeconds() < 86400)
+					{
+						$this->dispatch(new SyncWeixinUserSubscribeTime($user, substr($weixin->account, 1), $openid, isset($user_info) ? $user_info : null));
+					}
 
 				}
 
@@ -122,7 +135,7 @@ class WeixinSyncUsers extends Command
 					{
 						$user_info = $weixin->getUserInfo($openid);
 					}
-					$this->info('正在更新用户资料 ' . $user->id . ' ' . $user_info->nickname . '(' . $user_info->openid . ' ' . $user_info->unionid . ')');
+					$this->info('正在更新用户资料 ' . $user->id . ' ' . $user_info->nickname . '(' . $user_info->openid . (isset($user_info->unionid) ? ' ' . $user_info->unionid : '') . ')');
 					$user->setProfile('wx_openid' . $weixin->account, $openid);
 					$user->setProfile('wx_subscribed' . $weixin->account, true, 'private');
 				}

@@ -41,7 +41,7 @@ class SyncWeixinUserSubscribeTime extends Job implements ShouldQueue
             $this->user_info = $weixin->getUserInfo($this->openid);
         }
 
-        if(date('Ym', $this->user_info->subscribe_time) < date('Ym', strtotime($this->user->created_at)))
+        if(date('YmdHis', $this->user_info->subscribe_time) < date('YmdHis', strtotime($this->user->created_at)))
         {
             Log::debug('用户' . $this->user->id . ' ' . $this->user->name . ' 实际关注时间为' . date('Y-m-d H:i:s', $this->user_info->subscribe_time) . ', 早于' . $this->user->created_at);
             $this->user->created_at = date('Y-m-d H:i:s', $this->user_info->subscribe_time);
