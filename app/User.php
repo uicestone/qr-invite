@@ -582,16 +582,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 		
 	}
 	
-	public function getMagicGroupAttribute()
-	{
-		return $this->getProfile('magic_group');
-	}
-	
-	public function setMagicGroupAttribute($value)
-	{
-		$this->setProfile('magic_group', $value);
-	}
-	
 	/**
 	 * @deprecated
 	 * @return int
@@ -737,19 +727,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 		}
 		
 		return $membership->label;
-	}
-	
-	public function getMagicCreditAttribute()
-	{
-		$magic_credit = $this->getProfile('magic_credit');
-		
-		// 没有magic_credit key, 说明从未开过, 设为1
-		if(is_null($magic_credit) || ($magic_credit === 0 && !$this->paidPosts()->ofType('magic')->wherePivot('created_at', '>=', date('Y-m-d H:i:s', strtotime('06:00 today')))->first()))
-		{
-			$magic_credit = $this->setProfile('magic_credit', 1);
-		}
-		
-		return $magic_credit;
 	}
 	
 	// Additional Methods

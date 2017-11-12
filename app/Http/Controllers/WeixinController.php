@@ -36,15 +36,6 @@ class WeixinController extends Controller
 			$wx->sendServiceMessage($user, $media_id, 'image');
 		});
 		
-		// 手动获得二维码邀请活动邀请卡
-		$wx->onMessage('click_MAGIC_MID_EXAM', function($message) use($wx)
-		{
-			$user = $message->sender;
-			$media_id = $wx->getInvitationCardMediaId(Post::find(56492), $user);
-			$wx->sendServiceMessage($user, $media_id, 'image');
-			$wx->sendServiceMessage($user, $wx->sendServiceMessage($user, '欢迎加入锦囊收集行动！' . "\n" . '将您的专属邀请卡分享到朋友圈、微信群、微信好友，成功邀请2个好友即可免费获得【期中考试专题】教育锦囊，全套7个！活动限时有效，快快行动吧！'));
-		});
-		
 		// 二维码活动
 		$wx->onMessage([['event'=>'scan'], ['event'=>'subscribe']], function($message) use($wx)
 		{
@@ -262,8 +253,8 @@ class WeixinController extends Controller
 		}
 
 		$user->load('profiles');
-		$user->addVisible('token', 'realname', 'mobile', 'profiles', 'subscribed_tags', 'points_rank', 'points_rank_position', 'membership', 'membership_label', 'magic_group', 'magic_credit');
-		$user->append('followed', 'level', 'host_event', 'badges', 'subscribed_tags', 'points_rank', 'points_rank_position', 'membership', 'membership_label', 'magic_group', 'magic_credit');
+		$user->addVisible('token', 'realname', 'mobile', 'profiles', 'subscribed_tags', 'points_rank', 'points_rank_position', 'membership', 'membership_label');
+		$user->append('followed', 'level', 'host_event', 'badges', 'subscribed_tags', 'points_rank', 'points_rank_position', 'membership', 'membership_label');
 
 		return response($user)->header('Token', $user->token);
 	}

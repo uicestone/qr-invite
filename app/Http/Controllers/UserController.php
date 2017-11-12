@@ -239,8 +239,8 @@ class UserController extends Controller
 
 		if($user->isWritable())
 		{
-			$user->append('subscribed_tags', 'permissions', 'membership', 'membership_label', 'magic_group', 'magic_credit');
-			$user->addVisible('realname', 'mobile', 'email', 'subscribed_tags', 'permissions', 'membership', 'membership_label', 'magic_group', 'magic_credit');
+			$user->append('subscribed_tags', 'permissions', 'membership', 'membership_label');
+			$user->addVisible('realname', 'mobile', 'email', 'subscribed_tags', 'permissions', 'membership', 'membership_label');
 			if(!app()->user->can('edit_user'))
 			{
 				$user->setRelation('profiles', $user->profiles->filter(function($profile)
@@ -310,7 +310,7 @@ class UserController extends Controller
 			$user->updateProfiles($request->data('profiles'), 'private');
 		}
 
-		foreach(['children', 'subscribed_tags', 'magic_group'] as $key)
+		foreach(['children', 'subscribed_tags'] as $key)
 		{
 			if(!is_null($request->data($key)))
 			{

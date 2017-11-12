@@ -857,19 +857,6 @@ class PostController extends Controller
 			app()->user->load('profiles');
 			$response = app()->user->promote('share', ['post'=>$post]);
 			
-			// 分享锦囊
-			if($post->type === 'magic')
-			{
-				// TODO 今天分享锦囊的次数不超过2次, magic_credit + 1
-				$magic_share_count_today = app()->user->sharedPosts()->wherePivot('created_at', '>=', date('Y-m-d H:i:s', strtotime('midnight today')))->count();
-				
-				if($magic_share_count_today <= 2)
-				{
-					app()->user->setProfile('magic_credit', app()->user->magic_credit + 1);
-				}
-				$response['magic_credit'] = app()->user->magic_credit;
-			}
-
 			$action = '分享内容';
 		}
 
@@ -886,30 +873,7 @@ class PostController extends Controller
 		// 申请阅读权限
 		elseif(!is_null($request->data('paid')) && $request->data('paid') && !$post->paid)
 		{
-			// TODO 需要购买的锦囊判断逻辑
-			if($post->type === 'magic')
-			{
-				if(app()->user->magic_credit > 0)
-				{
-					$post->paidUsers()->attach(app()->user);
-					$paid_posts = app()->user->getProfile('paid_posts') ?: [];
-					$paid_posts = array_values(array_unique(array_merge($paid_posts, [$post->id])));
-					app()->user->setProfile('paid_posts', $paid_posts);
-					app()->user->setProfile('magic_credit', app()->user->magic_credit - 1);
-				}
-				else
-				{
-					// TODO 需要购买锦囊
-					abort(403, '您今日锦囊领取额度已用完');
-				}
-				
-				$response['magic_credit'] = app()->user->magic_credit;
-			}
-			else
-			{
-				abort(402, '付费内容, 购买后才能查看');
-			}
-			
+			abort(402, '付费内容, 购买后才能查看');
 			$action = '申请阅读权限';
 		}
 		else
