@@ -25,7 +25,7 @@ class WeixinController extends Controller
 		$wx->onMessage('^\d+$', function($message) use($wx)
 		{
 			$user = $message->sender;
-			$meta = Meta::where('key', 'mp_account_name')->where('value', substr($wx->account, 1))->orderBy('created_at', 'desc')->skip($message->content - 1)->first();
+			$meta = Meta::where('key', 'mp_account_name')->where('value', $wx->name)->orderBy('created_at', 'desc')->skip($message->content - 1)->first();
 
 			if(!$meta)
 			{

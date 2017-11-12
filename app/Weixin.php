@@ -1247,6 +1247,10 @@ class Weixin {
 			File::move($path, $path . '.' . $extension);
 			$path = $path . '.' . $extension;
 		}
+		elseif (substr($path, 0, 1) !== DIRECTORY_SEPARATOR)
+		{
+			$path = storage_path($path);
+		}
 
 		$data = ['media'=>curl_file_create($path, File::mimeType($path))];
 
