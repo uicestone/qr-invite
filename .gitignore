@@ -1,6 +1,6 @@
 /vendor
 /node_modules
-/public/uploads
+/public/admin
 /.env
 /.idea
 /app/Http/Controllers/TestController.php
