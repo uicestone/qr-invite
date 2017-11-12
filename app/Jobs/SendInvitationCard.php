@@ -82,7 +82,7 @@ class SendInvitationCard implements ShouldQueue
 			}
 			else
 			{
-				$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得' . $event->getMeta('date') . '的【' . $event->title . '】免费参与资格，扫描以下二维码添加好友，并将验证码【' . $inviter->human_code . '】发送给导师。↓↓↓');
+				$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得【' . $event->title . '】免费参与资格，扫描以下二维码添加好友，并将验证码【' . $inviter->human_code . '】发送给王老师，告知孩子的年级，即可加群。已经有王小曼老师微信的家长直接发验证码，请不要重复添加↓↓↓');
 			}
 		
 			// 通过客服消息再次发送小助手二维码
@@ -92,7 +92,7 @@ class SendInvitationCard implements ShouldQueue
 				{
 					$media = $wx->uploadMedia($event->getMeta('assistant_card_path'));
 					Config::set('assistant_card_media_id_event_' . $event->id, $media->media_id, $media->created_at + 86400 * 3);
-					$media_id = $media->id;
+					$media_id = $media->media_id;
 				}
 			
 				$wx->sendServiceMessage($inviter, $media_id, 'image');
@@ -108,7 +108,7 @@ class SendInvitationCard implements ShouldQueue
 	
 		$media_id = $wx->getInvitationCardMediaId($event, $user);
 
-		$wx->sendServiceMessage($user, '请将下方邀请卡分享到朋友圈、微信群、微信好友，成功邀请2个好友扫码并关注即可免费参与本期学习小组。↓↓↓');
+		$wx->sendServiceMessage($user, '请将下面邀请卡分享到朋友圈、微信群、微信好友，成功邀请2个好友扫码并关注即可免费加入本期期末集训群，进行为期10日的名师押题，攻破期末薄弱考点活动↓↓↓');
 		$wx->sendServiceMessage($user, $media_id, 'image');
     }
 }
