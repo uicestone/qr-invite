@@ -980,6 +980,9 @@ class Weixin {
 				
 				$data['image']['media_id'] = $contents;
 				break;
+			case 'mpnews':
+				$data['mpnews']['media_id'] = $contents;
+				break;
 			case 'text':
 			default:
 				$data['text']['content'] = $contents;
@@ -1257,6 +1260,17 @@ class Weixin {
 		$media = $this->call('https://api.weixin.qq.com/cgi-bin/media/upload?access_token=' . $this->getAccessToken() . '&type=' . $type, $data);
 
 		return $media;
+	}
+
+	public function batchGetMaterial ($type = 'news', $offset = 0, $count = 20)
+	{
+		$result = $this->call('https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=' . $this->getAccessToken(), [
+			'type' => $type,
+			'offset' => $offset,
+			'count' => $count
+		], 'POST', 'json');
+
+		return $result;
 	}
 
 	public function createUserGroup($name)
