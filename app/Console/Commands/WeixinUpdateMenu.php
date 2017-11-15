@@ -1,8 +1,6 @@
 <?php namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Weixin, App\Config;
 
 class WeixinUpdateMenu extends Command {
@@ -37,7 +35,7 @@ class WeixinUpdateMenu extends Command {
 	 *
 	 * @return mixed
 	 */
-	public function fire()
+	public function handle()
 	{
 		$weixin = new Weixin($this->argument('account'));
 
@@ -81,30 +79,6 @@ class WeixinUpdateMenu extends Command {
 		
 		$this->info(json_encode($result));
 		$this->info(json_encode($weixin->getMenu(), JSON_UNESCAPED_UNICODE));
-	}
-
-	/**
-	 * Get the console command arguments.
-	 *
-	 * @return array
-	 */
-	protected function getArguments()
-	{
-		return [
-			['account', InputArgument::REQUIRED, 'Wechat account code.'],
-		];
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return [
-//			['example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null],
-		];
 	}
 
 }
