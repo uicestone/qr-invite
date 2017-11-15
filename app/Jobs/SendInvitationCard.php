@@ -82,7 +82,7 @@ class SendInvitationCard implements ShouldQueue
 			}
 			else
 			{
-				$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得【' . $event->title . '】免费参与资格，扫描以下二维码添加好友，并将验证码【' . $inviter->human_code . '】发送给王老师，告知孩子的年级，即可加群。已经有王小曼老师微信的家长直接发验证码，请不要重复添加↓↓↓');
+				$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得【' . $event->title . '】免费参与资格，扫描以下二维码添加好友，并将验证码【' . $inviter->human_code . '】发送给王老师，告知孩子的年级，即可加群。已经有王小曼老师微信的家长直接发验证码，请不要重复添加↓↓↓ 详情点击公众号菜单「押题详情」');
 			}
 		
 			// 通过客服消息再次发送小助手二维码
