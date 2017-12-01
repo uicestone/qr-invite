@@ -1396,7 +1396,7 @@ class Weixin {
 			if(!$qr_code_config_item)
 			{
 				Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 生成邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
-				$qr_code_config_item = $this->generateQrCode(['name'=>'invitation', 'event_id'=>(int)$event->id, 'user_id'=>(int)$user->id], true);
+				$qr_code_config_item = $this->generateQrCode(['name'=>'invitation', 'event_id'=>(int)$event->id, 'user_id'=>(int)$user->id], !$user->is_fake);
 			}
 			
 			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
