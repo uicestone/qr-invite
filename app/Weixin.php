@@ -727,12 +727,6 @@ class Weixin {
 
 			// 消息自动回复
 
-			// 关注自动回复
-			if($this->message->content === '关注回复' || $this->message->event === 'subscribe')
-			{
-				return $this->replyMessage(Config::get('wx_welcome_message' . $this->account));
-			}
-
 			// 自定义规则自动回复
 			foreach(Config::get('wx_auto_reply' . $this->account) ?: [] as $auto_reply)
 			{
@@ -797,6 +791,12 @@ class Weixin {
 					}
 				}
 			}
+
+			// 关注自动回复
+			if($this->message->content === '关注回复' || $this->message->event === 'subscribe')
+			{
+				return $this->replyMessage(Config::get('wx_welcome_message' . $this->account));
+			}
 		}
 		
 		if(!$this->matchMessage($type))
@@ -859,7 +859,7 @@ class Weixin {
 		}
 
 		// [{condition}, {condition}]
-		if(is_array($condition) && is_array($condition[0]) && array_reduce($condition, function($previous, $current){return $previous || $this->matchMessage($current);}, false))
+		if(is_array($condition) && array_reduce($condition, function($previous, $current){return $previous || $this->matchMessage($current);}, false))
 		{
 			return true;
 		}
