@@ -100,7 +100,7 @@ class WeixinSyncUsers extends Command
 
 					$user->load('profiles');
 
-					if(!$user->gender || ($weixin->supports('unionid') && !$user->wx_unionid))
+					if(!$user->gender || !$user->getOriginal('avatar') || ($weixin->supports('unionid') && !$user->wx_unionid))
 					{
 						if(!isset($user_info))
 						{
