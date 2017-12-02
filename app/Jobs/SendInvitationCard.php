@@ -73,9 +73,9 @@ class SendInvitationCard implements ShouldQueue
 		if((2 - $invited_users->count()) > 0)
 		{
 			$message = Config::get('message_invitation_continue');
-			$message = str_replace($message, '{user_name}', $user->name);
-			$message = str_replace($message, '{event_title}', $event->title);
-			$message = str_replace($message, '{invite_more}', 2 - $invited_users->count());
+			$message = str_replace('{user_name}', $user->name, $message);
+			$message = str_replace('{event_title}', $event->title, $message);
+			$message = str_replace('{invite_more}', 2 - $invited_users->count(), $message);
 			$wx->sendServiceMessage($inviter, $message);
 		}
 		elseif($invited_users->count() === 2)
@@ -87,9 +87,9 @@ class SendInvitationCard implements ShouldQueue
 			else
 			{
 				$message = Config::get('message_invitation_success');
-				$message = str_replace($message, '{user_name}', $user->name);
-				$message = str_replace($message, '{event_title}', $event->title);
-				$message = str_replace($message, '{inviter_human_code}', $inviter->human_code);
+				$message = str_replace('{user_name}', $user->name, $message);
+				$message = str_replace('{event_title}', $event->title, $message);
+				$message = str_replace('{inviter_human_code}', $inviter->human_code, $message);
 				$wx->sendServiceMessage($inviter, $message);
 			}
 		
@@ -112,9 +112,9 @@ class SendInvitationCard implements ShouldQueue
 		elseif($invited_users->count() > 2)
 		{
 			$message = Config::get('message_invitation_success');
-			$message = str_replace($message, '{user_name}', $user->name);
-			$message = str_replace($message, '{event_title}', $event->title);
-			$message = str_replace($message, '{inviter_human_code}', $inviter->human_code);
+			$message = str_replace('{user_name}', $user->name, $message);
+			$message = str_replace('{event_title}', $event->title, $message);
+			$message = str_replace('{inviter_human_code}', $inviter->human_code, $message);
 			$wx->sendServiceMessage($inviter, $message);
 		}
 	
