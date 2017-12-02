@@ -108,7 +108,7 @@ class SendInvitationCard implements ShouldQueue
 	
 		$media_id = $wx->getInvitationCardMediaId($event, $user);
 
-		$wx->sendServiceMessage($user, '请将下面邀请卡分享到朋友圈、微信群、微信好友，成功邀请2个好友扫码并关注即可免费加入本期期末集训群，进行为期10日的名师押题，攻破期末薄弱考点活动↓↓↓');
+		$wx->sendServiceMessage($user, '请将下面邀请卡分享到朋友圈、微信群、微信好友，成功邀请2个好友扫码并关注即可免费加入本期期末集训群，进行为期10日的名师押题，攻破期末薄弱考点活动↓↓↓详情点击公众号菜单：押题详情。或者加王小曼老师微信咨询，微信号:18017889883');
 		$wx->sendServiceMessage($user, $media_id, 'image');
     }
 }
