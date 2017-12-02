@@ -72,7 +72,11 @@ class SendInvitationCard implements ShouldQueue
 	
 		if((2 - $invited_users->count()) > 0)
 		{
-			$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请，报名【' . $event->title . '】。你当前还差【' . (2 - $invited_users->count()) . '】个邀请即可获得参与资格。');
+			$message = Config::get('message_invitation_continue');
+			$message = str_replace($message, '{user_name}', $user->name);
+			$message = str_replace($message, '{event_title}', $event->title);
+			$message = str_replace($message, '{invite_more}', 2 - $invited_users->count());
+			$wx->sendServiceMessage($inviter, $message);
 		}
 		elseif($invited_users->count() === 2)
 		{
@@ -82,7 +86,11 @@ class SendInvitationCard implements ShouldQueue
 			}
 			else
 			{
-				$wx->sendServiceMessage($inviter, '你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得【' . $event->title . '】免费参与资格，扫描以下二维码添加好友，并将验证码【' . $inviter->human_code . '】发送给王老师，告知孩子的年级，即可加群。已经有王小曼老师微信的家长直接发验证码，请不要重复添加↓↓↓ 详情点击公众号菜单「押题详情」');
+				$message = Config::get('message_invitation_success');
+				$message = str_replace($message, '{user_name}', $user->name);
+				$message = str_replace($message, '{event_title}', $event->title);
+				$message = str_replace($message, '{inviter_human_code}', $inviter->human_code);
+				$wx->sendServiceMessage($inviter, $message);
 			}
 		
 			// 通过客服消息再次发送小助手二维码
@@ -103,12 +111,16 @@ class SendInvitationCard implements ShouldQueue
 		}
 		elseif($invited_users->count() > 2)
 		{
-			$wx->sendServiceMessage($inviter, '您的好友【' . $user->name . '】已接受您的邀请。');
+			$message = Config::get('message_invitation_success');
+			$message = str_replace($message, '{user_name}', $user->name);
+			$message = str_replace($message, '{event_title}', $event->title);
+			$message = str_replace($message, '{inviter_human_code}', $inviter->human_code);
+			$wx->sendServiceMessage($inviter, $message);
 		}
 	
 		$media_id = $wx->getInvitationCardMediaId($event, $user);
 
-		$wx->sendServiceMessage($user, '请将下面邀请卡分享到朋友圈，有2个好友扫码并关注即可免费加入本期期末集训群，进行为期10日的名师押题，攻破期末薄弱考点活动↓↓↓详情点击公众号菜单:押题详情。或者加王小曼老师微信咨询，微信号:18017889883');
+		$wx->sendServiceMessage($user, Config::get('message_invitation_desc'));
 		$wx->sendServiceMessage($user, $media_id, 'image');
     }
 }
