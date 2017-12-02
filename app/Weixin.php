@@ -576,18 +576,11 @@ class Weixin {
 				$this->user = $openid_profile_existed->user;
 			}
 			// 尝试用unionid获得已有用户信息
-			else
+			elseif (isset($user_info->unionid))
 			{
 				Log::info('[' . str_replace('_', '', $this->account) . '] 未找到openid' . $this->account . ': ' . $message_raw->FromUserName . '的信息，尝试查找unionid。');
 				$user_info = $this->getUserInfo($message_raw->FromUserName);
-				if(isset($user_info->unionid))
-				{
-					$this->user = User::where('wx_unionid', $user_info->unionid)->first();
-				}
-				else
-				{
-					Log::error('[' . str_replace('_', '', $this->account) . '] UnionID not found. ' . json_encode($user_info));
-				}
+				$this->user = User::where('wx_unionid', $user_info->unionid)->first();
 			}
 			
 			// 准备创建新用户
