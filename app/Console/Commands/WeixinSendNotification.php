@@ -120,7 +120,12 @@ class WeixinSendNotification extends Command {
 				if($invitations < 2)
 				{
 					$media_id = $wx->getInvitationCardMediaId($event, $user);
-					$wx->sendServiceMessage($user, '亲爱的，超级火爆的【' . $event->title . '】将于' . $event->getMeta('date') . '开营！目前已有' . ($total_users_invited * 10 + rand(0, 9)) . "人报名啦！\r\n您当前还差邀请" . (2 - $invitations) . '个朋友，即可成为集训营首批学员，' . ($event->getMeta('host_name') ?: $event->author->name) . '等您入营哦！【入营方法】请将下方邀请卡分享到万能的朋友圈、微信群，成功邀请2个好友扫码即可获得参与学习小组资格。↓↓↓');
+					$message = Config::get('message_invitation_remind');
+					$message = str_replace('{event_title}', $event->title, $message);
+					$message = str_replace('{total_users_invited}', ($total_users_invited), $message);
+					$message = str_replace('{invite_more}', 2 - $invitations, $message);
+
+					$wx->sendServiceMessage($user, $message);
 
 					$result = $wx->sendServiceMessage($user, $media_id, 'image');
 					if(isset($result->errcode) && $result->errcode)
@@ -187,8 +192,28 @@ class WeixinSendNotification extends Command {
 
 		$users->each(function($user) use($event, $media_id, $wx)
 		{
-			$user->sendMessage('event_attend', url($event->getMeta('assistant_card_path')), ['first'=>'恭喜你已获得' . $event->getMeta('date') . '的【' . $event->title . '】免费参与资格', 'keynote1'=>$event->title, 'keynote2'=>$event->getMeta('date'), 'keynote3'=>'本公众号和导师微信群', 'remark'=>['value'=>"\n" . '点击本消息扫描二维码添加导师为好友，并将验证码【' . $user->human_code . '】发送给导师。', 'color'=>'#AA0000']]);
-			$wx->sendServiceMessage($user, $media_id, 'image');
+			if($wx->supports('template_message'))
+			{
+				$user->sendMessage('event_attend', url($event->getMeta('assistant_card_path')), [
+					'first'=>'你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得'
+						. $event->getMeta('date')
+						. '的【' . $event->title . '】免费参与资格',
+					'keynote1'=>$event->title,
+					'keynote2'=>$event->getMeta('date'),
+					'keynote3'=>'本公众号和导师微信群',
+					'remark'=>['value'=>"\n"
+						. '点击本消息扫描二维码添加导师为好友，并将验证码【'
+						. $user->human_code .
+						'】发送给导师。', 'color'=>'#AA0000']]);
+			}
+			else
+			{
+				$message = Config::get('message_invitation_success');
+				$message = str_replace('{user_name}', $user->name, $message);
+				$message = str_replace('{event_title}', $event->title, $message);
+				$message = str_replace('{inviter_human_code}', $user->human_code, $message);
+				$wx->sendServiceMessage($user, $message);
+			}
 		});
 		
 	}
