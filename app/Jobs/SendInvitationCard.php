@@ -16,6 +16,7 @@ class SendInvitationCard implements ShouldQueue
 	protected $qrcode;
 	protected $user;
 	protected $mp_account;
+	protected $should_invite = 5;
 
     /**
      * Create a new job instance.
@@ -70,15 +71,15 @@ class SendInvitationCard implements ShouldQueue
 			return $profile->user;
 		});
 	
-		if((2 - $invited_users->count()) > 0)
+		if(($this->should_invite - $invited_users->count()) > 0)
 		{
 			$message = Config::get('message_invitation_continue');
 			$message = str_replace('{user_name}', $user->name, $message);
 			$message = str_replace('{event_title}', $event->title, $message);
-			$message = str_replace('{invite_more}', 2 - $invited_users->count(), $message);
+			$message = str_replace('{invite_more}', $this->should_invite - $invited_users->count(), $message);
 			$wx->sendServiceMessage($inviter, $message);
 		}
-		elseif($invited_users->count() === 2)
+		elseif($invited_users->count() === $this->should_invite)
 		{
 			if($wx->supports('template_message'))
 			{
@@ -109,7 +110,7 @@ class SendInvitationCard implements ShouldQueue
 			}
 		
 		}
-		elseif($invited_users->count() > 2)
+		elseif($invited_users->count() > $this->should_invite)
 		{
 			$message = Config::get('message_invitation_success');
 			$message = str_replace('{user_name}', $user->name, $message);
