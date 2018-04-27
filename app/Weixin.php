@@ -1386,7 +1386,7 @@ class Weixin {
 	public function generateInvitationCard($event, $user)
 	{
 		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 准备 ' . $event->id . ' ' . $event->title . ' 的邀请函');
-		$invitation_card_local_path = storage_path('uploads/' . md5($event->getMeta('invitation_cover_path')));
+		$invitation_card_local_path = storage_path('uploads/' . $event->getMeta('invitation_cover_path'));
 
 		if(!File::exists($invitation_card_local_path))
 		{
