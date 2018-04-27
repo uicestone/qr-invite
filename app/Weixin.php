@@ -1372,47 +1372,7 @@ class Weixin {
 
 		if(!$invitation_card_media_id)
 		{
-			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 准备 ' . $event->id . ' ' . $event->title . ' 的邀请函');
-			$invitation_card_local_path = storage_path('uploads/' . md5($event->getMeta('invitation_cover_path')));
-			
-			if(!File::exists($invitation_card_local_path))
-			{
-				(new Client())->get($event->getMeta('invitation_cover_path'), ['sink' => $invitation_card_local_path]);
-				Log::info('邀请函背景下载完成');
-			}
-			
-			$image_invitation_card = Image::make($invitation_card_local_path);
-			
-			// 将二维码拼入邀请函
-			$qr_code_config_item = Config::where('value', 'like', '%"name":"invitation"%')->where('value', 'like', '%"event_id":' . $event->id . ',%')->where('value', 'like', '%"user_id":' . $user->id . '}%')->first();
-
-			if(!$qr_code_config_item)
-			{
-				Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 生成邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
-				$qr_code_config_item = $this->generateQrCode(['name'=>'invitation', 'event_id'=>(int)$event->id, 'user_id'=>(int)$user->id], !$user->is_fake);
-			}
-			
-			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
-			$image_qrcode = Image::make($qr_code_config_item->value->url);
-			
-			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载头像 ' . $user->avatar);
-			$avatar_path = storage_path('uploads/' . md5($user->avatar));
-			(new Client())->get($user->avatar, ['sink' => $avatar_path]);
-			$image_avatar = Image::make($avatar_path);
-			
-			$image_invite_card_path = storage_path('uploads/' . md5($event->id . '-invitation-' . $user->id) . '.jpg');
-			
-			$image_invitation_card->text(mb_strstripmb4($user->name) . "\n" . '邀请您参加', 490, 345, function(Font $font)
-			{
-				$font->file(env('FONT_PATH') . 'SIMLI.TTF');
-				$font->size(36);
-				$font->color([0, 86, 22]);
-				$font->align('center');
-			})
-			->insert($image_avatar->resize(175, 175)->mask(resource_path('images/avatar_mask.png'), true), 'top-left', 397, 12)
-			->insert($image_qrcode->resize(200, 200), 'top-left', 195, 885)
-			->save($image_invite_card_path);
-
+			$image_invite_card_path = $this->generateInvitationCard($event, $user);
 			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 上传邀请活动 ' . $event->id . ' ' . $event->title . ' 的邀请函');
 			$media = $this->uploadMedia($image_invite_card_path);
 			Config::set('invitation_card_media_id_event_' . $event->id  . '_user_' . $user->id, $media->media_id, $media->created_at + 86400 * 3);
@@ -1420,6 +1380,53 @@ class Weixin {
 		}
 
 		return $invitation_card_media_id;
+	}
+	
+	public function generateInvitationCard($event, $user)
+	{
+		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 准备 ' . $event->id . ' ' . $event->title . ' 的邀请函');
+		$invitation_card_local_path = storage_path('uploads/' . md5($event->getMeta('invitation_cover_path')));
+
+		if(!File::exists($invitation_card_local_path))
+		{
+			(new Client())->get($event->getMeta('invitation_cover_path'), ['sink' => $invitation_card_local_path]);
+			Log::info('邀请函背景下载完成');
+		}
+		
+		$image_invitation_card = Image::make($invitation_card_local_path);
+		
+		// 将二维码拼入邀请函
+		$qr_code_config_item = Config::where('value', 'like', '%"name":"invitation"%')->where('value', 'like', '%"event_id":' . $event->id . ',%')->where('value', 'like', '%"user_id":' . $user->id . '}%')->first();
+		
+		if(!$qr_code_config_item)
+		{
+			Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 生成邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
+			$qr_code_config_item = $this->generateQrCode(['name'=>'invitation', 'event_id'=>(int)$event->id, 'user_id'=>(int)$user->id], !$user->is_fake);
+		}
+		
+		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
+		$image_qrcode = Image::make($qr_code_config_item->value->url);
+		
+		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载头像 ' . $user->avatar);
+		$avatar_path = storage_path('uploads/' . md5($user->avatar));
+		(new Client())->get($user->avatar, ['sink' => $avatar_path]);
+		$image_avatar = Image::make($avatar_path);
+		
+		$image_invite_card_path = storage_path('uploads/' . md5($event->id . '-invitation-' . $user->id) . '.jpg');
+		
+		$image_invitation_card
+//		->text(mb_strstripmb4($user->name) . "\n" . '邀请您参加', 490, 345, function(Font $font)
+//		{
+//			$font->file(env('FONT_PATH') . 'SIMLI.TTF');
+//			$font->size(36);
+//			$font->color([0, 86, 22]);
+//			$font->align('center');
+//		})
+//		->insert($image_avatar->resize(175, 175)->mask(resource_path('images/avatar_mask.png'), true), 'top-left', 397, 12)
+		->insert($image_qrcode->resize(280, 280), 'top-left', 465, 1070)
+		->save($image_invite_card_path);
+		
+		return $image_invite_card_path;
 	}
 
 	public function generatePaySign(array $data)
