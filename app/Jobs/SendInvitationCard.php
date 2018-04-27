@@ -121,7 +121,9 @@ class SendInvitationCard implements ShouldQueue
 	
 		$media_id = $wx->getInvitationCardMediaId($event, $user);
 
-		$wx->sendServiceMessage($user, Config::get('message_invitation_desc'));
+		$message = Config::get('message_invitation_desc');
+		$message = str_replace('{event_title}', $event->title, $message);
+		$wx->sendServiceMessage($user, $message);
 		$wx->sendServiceMessage($user, $media_id, 'image');
     }
 }
