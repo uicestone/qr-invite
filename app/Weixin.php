@@ -1407,10 +1407,10 @@ class Weixin {
 		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载邀请活动 ' . $event->id . ' ' . $event->title . ' 的二维码');
 		$image_qrcode = Image::make($qr_code_config_item->value->url);
 		
-		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载头像 ' . $user->avatar);
-		$avatar_path = storage_path('uploads/' . md5($user->avatar));
-		(new Client())->get($user->avatar, ['sink' => $avatar_path]);
-		$image_avatar = Image::make($avatar_path);
+//		Log::info('[' . str_replace('_', '', $this->account) . '] 正在为用户' . $user->id . ' ' . $user->name . ' 下载头像 ' . $user->avatar);
+//		$avatar_path = storage_path('uploads/' . md5($user->avatar));
+//		(new Client())->get($user->avatar, ['sink' => $avatar_path]);
+//		$image_avatar = Image::make($avatar_path);
 		
 		$image_invite_card_path = storage_path('uploads/' . md5($event->id . '-invitation-' . $user->id) . '.jpg');
 		
