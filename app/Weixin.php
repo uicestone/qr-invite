@@ -961,11 +961,12 @@ class Weixin {
 			case 'image':
 				if(URL::isValidUrl($contents))
 				{
+					$contents_image_url = $contents;
 					$contents = Config::get('wx_media_id_' . md5($contents));
 					
 					if(!$contents)
 					{
-						$media = $this->uploadMedia($contents);
+						$media = $this->uploadMedia($contents_image_url);
 						$contents = $media->media_id;
 						Config::set('wx_media_id_' . md5($contents), $contents, time() + 86400 * 3);
 					}
