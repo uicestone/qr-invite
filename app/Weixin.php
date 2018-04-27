@@ -1418,8 +1418,8 @@ class Weixin {
 		$image_invitation_card
 		->text(mb_strstripmb4($user->name), 500, 90, function(Font $font)
 		{
-			$font->file(env('FONT_PATH') . 'SIMLI.TTF');
-			$font->size(60);
+			$font->file(env('FONT_PATH') . 'simhei.ttf');
+			$font->size(65);
 			$font->color([255, 255, 255]);
 			$font->align('right');
 		})
