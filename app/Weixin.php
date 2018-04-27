@@ -1202,7 +1202,7 @@ class Weixin {
 	public function downloadMedia($media_id)
 	{
 		$path = storage_path('uploads/' . sha1($media_id));
-		$content = $this->call('http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id);
+		$content = $this->call('https://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id);
 		
 		if(strpos($content, '{') === 0 && $message = json_decode($content))
 		{
@@ -1223,7 +1223,7 @@ class Weixin {
 	 */
 	public function getMediaUrl($media_id)
 	{
-		return 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id;
+		return 'https://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id;
 	}
 
 	/**
@@ -1526,7 +1526,7 @@ class Weixin {
 
 		$sign_args = [
 			'appid'=>$this->app_id,
-			'url'=>"http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]",
+			'url'=>"https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]",
 			'timestamp'=>$args['timeStamp'],
 			'noncestr'=>$args['nonceStr'],
 			'accesstoken'=>$this->get_oauth_token($_GET['code'])->access_token
