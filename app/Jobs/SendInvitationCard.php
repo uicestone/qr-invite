@@ -16,7 +16,7 @@ class SendInvitationCard implements ShouldQueue
 	protected $qrcode;
 	protected $user;
 	protected $mp_account;
-	protected $should_invite = 5;
+	protected $should_invite = 3;
 
     /**
      * Create a new job instance.
