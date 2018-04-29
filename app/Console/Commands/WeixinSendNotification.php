@@ -35,6 +35,8 @@ class WeixinSendNotification extends Command {
 	 * @var string
 	 */
 	protected $description = '给微信用户发送通知';
+	
+	protected $should_invite = 3;
 
 	/**
 	 * Create a new command instance.
@@ -88,7 +90,7 @@ class WeixinSendNotification extends Command {
 	
 	/**
 	 * 发送邀请提醒
-	 * 对于昨天被邀请的用户, 其邀请不满2个的, 补发邀请函和邀请提醒
+	 * 对于昨天被邀请的用户, 其邀请不满 $this->should_invite 个的, 补发邀请函和邀请提醒
 	 * @param Weixin $wx
 	 */
 	protected function sendInvitationNotice(Weixin $wx)
@@ -117,13 +119,13 @@ class WeixinSendNotification extends Command {
 			{
 				$invitations = Profile::where('key', 'invited_by_user_id_in_event_' . $event->id)->where('value', $user->id)->count();
 
-				if($invitations < 2)
+				if($invitations < $this->should_invite)
 				{
 					$media_id = $wx->getInvitationCardMediaId($event, $user);
 					$message = Config::get('message_invitation_remind');
 					$message = str_replace('{event_title}', $event->title, $message);
 					$message = str_replace('{total_users_invited}', ($total_users_invited), $message);
-					$message = str_replace('{invite_more}', 2 - $invitations, $message);
+					$message = str_replace('{invite_more}', $this->should_invite - $invitations, $message);
 
 					$wx->sendServiceMessage($user, $message);
 
@@ -172,7 +174,7 @@ class WeixinSendNotification extends Command {
 				return $profile->user;
 			});
 			
-			return $invited_users->count() < 2;
+			return $invited_users->count() < $this->should_invite;
 		});
 
 		$this->info('即将发送' . $users->count() . '个用户');
