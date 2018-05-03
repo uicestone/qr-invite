@@ -1202,7 +1202,7 @@ class Weixin {
 	public function downloadMedia($media_id)
 	{
 		$path = storage_path('uploads/' . sha1($media_id));
-		$content = $this->call('https://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id);
+		$content = $this->call('https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id);
 		
 		if(strpos($content, '{') === 0 && $message = json_decode($content))
 		{
@@ -1223,7 +1223,7 @@ class Weixin {
 	 */
 	public function getMediaUrl($media_id)
 	{
-		return 'https://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id;
+		return 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->getAccessToken() . '&media_id=' . $media_id;
 	}
 
 	/**
