@@ -123,6 +123,7 @@ class SendInvitationCard implements ShouldQueue
 
 		$message = Config::get('message_invitation_desc');
 		$message = str_replace('{event_title}', $event->title, $message);
+		$message = str_replace('{event_abbreviation}', $event->abbreviation, $message);
 		$wx->sendServiceMessage($user, $message);
 		$wx->sendServiceMessage($user, $media_id, 'image');
     }
