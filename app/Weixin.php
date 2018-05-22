@@ -1416,15 +1416,15 @@ class Weixin {
 		$image_invite_card_path = storage_path('uploads/' . md5($event->id . '-invitation-' . $user->id) . '.jpg');
 		
 		$image_invitation_card
-		->text(mb_strstripmb4($user->name), 500, 90, function(Font $font)
+		->text(mb_strstripmb4($user->name), 510, 68, function(Font $font)
 		{
 			$font->file(env('FONT_PATH') . 'simhei.ttf');
-			$font->size(65);
-			$font->color([255, 255, 255]);
-			$font->align('right');
+			$font->size(45);
+			$font->color([0, 0, 0]);
+			$font->align('center');
 		})
 //		->insert($image_avatar->resize(175, 175)->mask(resource_path('images/avatar_mask.png'), true), 'top-left', 397, 12)
-		->insert($image_qrcode->resize(280, 280), 'top-left', 465, 1070)
+		->insert($image_qrcode->resize(248, 248), 'top-left', 235, 1114)
 		->save($image_invite_card_path);
 		
 		return $image_invite_card_path;
