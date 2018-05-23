@@ -205,7 +205,7 @@ class WeixinSendNotification extends Command {
 					'keynote3'=>'本公众号和导师微信群',
 					'remark'=>['value'=>"\n"
 						. '点击本消息扫描二维码添加导师为好友，并将验证码【'
-						. $user->human_code .
+						. $event->getUserVerifyCode() .
 						'】发送给导师。', 'color'=>'#AA0000']]);
 			}
 			else
@@ -213,7 +213,7 @@ class WeixinSendNotification extends Command {
 				$message = Config::get('message_invitation_success');
 				$message = str_replace('{user_name}', $user->name, $message);
 				$message = str_replace('{event_title}', $event->title, $message);
-				$message = str_replace('{inviter_human_code}', $user->human_code, $message);
+				$message = str_replace('{inviter_human_code}', $event->getUserVerifyCode(), $message);
 				$wx->sendServiceMessage($user, $message);
 			}
 		});

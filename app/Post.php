@@ -1320,4 +1320,11 @@ class Post extends Model {
 		$disk->put('uploads/' . $file_store_name, $content);
 	}
 	
+	public function getUserVerifyCode()
+	{
+		$seconds = time() - strtotime('midnight today') + 10000;
+		$code = $seconds . $this->id;
+		return $code;
+	}
+	
 }

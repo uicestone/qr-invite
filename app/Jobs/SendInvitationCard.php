@@ -83,14 +83,14 @@ class SendInvitationCard implements ShouldQueue
 		{
 			if($wx->supports('template_message'))
 			{
-				$inviter->sendMessage('event_attend', url($event->getMeta('assistant_card_path')), ['first'=>'你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得' . $event->getMeta('date') . '的【' . $event->title . '】免费参与资格', 'keynote1'=>$event->title, 'keynote2'=>$event->getMeta('date'), 'keynote3'=>'本公众号和导师微信群', 'remark'=>['value'=>"\n" . '点击本消息扫描二维码添加导师为好友，并将验证码【' . $inviter->human_code . '】发送给导师。', 'color'=>'#AA0000']]);
+				$inviter->sendMessage('event_attend', url($event->getMeta('assistant_card_path')), ['first'=>'你的好友【' . $user->name . '】已接受你的邀请。恭喜你已获得' . $event->getMeta('date') . '的【' . $event->title . '】免费参与资格', 'keynote1'=>$event->title, 'keynote2'=>$event->getMeta('date'), 'keynote3'=>'本公众号和导师微信群', 'remark'=>['value'=>"\n" . '点击本消息扫描二维码添加导师为好友，并将验证码【' . $event->getUserVerifyCode() . '】发送给导师。', 'color'=>'#AA0000']]);
 			}
 			else
 			{
 				$message = Config::get('message_invitation_success');
 				$message = str_replace('{user_name}', $user->name, $message);
 				$message = str_replace('{event_title}', $event->title, $message);
-				$message = str_replace('{inviter_human_code}', $inviter->human_code, $message);
+				$message = str_replace('{inviter_human_code}', $event->getUserVerifyCode(), $message);
 				$wx->sendServiceMessage($inviter, $message);
 			}
 		
@@ -115,7 +115,7 @@ class SendInvitationCard implements ShouldQueue
 			$message = Config::get('message_invitation_success');
 			$message = str_replace('{user_name}', $user->name, $message);
 			$message = str_replace('{event_title}', $event->title, $message);
-			$message = str_replace('{inviter_human_code}', $inviter->human_code, $message);
+			$message = str_replace('{inviter_human_code}', $event->getUserVerifyCode(), $message);
 			$wx->sendServiceMessage($inviter, $message);
 		}
 	
