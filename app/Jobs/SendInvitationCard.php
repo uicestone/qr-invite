@@ -108,6 +108,8 @@ class SendInvitationCard implements ShouldQueue
 				$event->attendees()->attach($inviter);
 				$event->save();
 			}
+			
+			$user->setProfile('attend_event_' . $event->ID, date('Y-m-d H:i:s'));
 		
 		}
 		elseif($invited_users->count() > $this->should_invite)
