@@ -112,14 +112,14 @@ class SendInvitationCard implements ShouldQueue
 			$user->setProfile('attend_event_' . $event->ID, date('Y-m-d H:i:s'));
 		
 		}
-		elseif($invited_users->count() > $this->should_invite)
-		{
-			$message = Config::get('message_invitation_success');
-			$message = str_replace('{user_name}', $user->name, $message);
-			$message = str_replace('{event_title}', $event->title, $message);
-			$message = str_replace('{inviter_human_code}', $event->getUserVerifyCode(), $message);
-			$wx->sendServiceMessage($inviter, $message);
-		}
+//		elseif($invited_users->count() > $this->should_invite)
+//		{
+//			$message = Config::get('message_invitation_success');
+//			$message = str_replace('{user_name}', $user->name, $message);
+//			$message = str_replace('{event_title}', $event->title, $message);
+//			$message = str_replace('{inviter_human_code}', $event->getUserVerifyCode(), $message);
+//			$wx->sendServiceMessage($inviter, $message);
+//		}
 	
 		$media_id = $wx->getInvitationCardMediaId($event, $user);
 
